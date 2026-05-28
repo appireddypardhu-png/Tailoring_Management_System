@@ -1,11 +1,19 @@
 package com.project.Tailoring.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "member")
+
+@JsonIgnoreProperties({
+    "hibernateLazyInitializer",
+    "handler"
+})
 
 @JsonPropertyOrder({
     "mid",
@@ -37,15 +45,17 @@ public class Member {
     private Long customerid;
 
     // DATABASE RELATION
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerid")
     @JsonIgnore
     private Customer customer;
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private TopMeasurement topMeasurement;
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private BottomMeasurement bottomMeasurement;
 
     public Member() {
@@ -67,15 +77,15 @@ public class Member {
         this.mname = mname;
     }
 
-    // IMPORTANT FIX
+    // IMPORTANT
     public Long getCustomerid() {
 
-        // during GET
-        if (customer != null) {
+        // During GET
+        if(customer != null) {
             return customer.getCustomerid();
         }
 
-        // during POST
+        // During POST
         return customerid;
     }
 
@@ -95,7 +105,9 @@ public class Member {
         return topMeasurement;
     }
 
-    public void setTopMeasurement(TopMeasurement topMeasurement) {
+    public void setTopMeasurement(
+            TopMeasurement topMeasurement
+    ) {
         this.topMeasurement = topMeasurement;
     }
 
@@ -103,7 +115,9 @@ public class Member {
         return bottomMeasurement;
     }
 
-    public void setBottomMeasurement(BottomMeasurement bottomMeasurement) {
+    public void setBottomMeasurement(
+            BottomMeasurement bottomMeasurement
+    ) {
         this.bottomMeasurement = bottomMeasurement;
     }
 }
