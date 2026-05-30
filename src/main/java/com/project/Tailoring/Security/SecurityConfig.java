@@ -9,9 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
+	@Autowired
+	private JwtFilter jwtFilter;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -19,31 +23,30 @@ public class SecurityConfig {
 	    return new BCryptPasswordEncoder();
 	}
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http
-    ) throws Exception {
-
-        http
-
-            .cors(cors -> {})
-
-            .csrf(csrf -> csrf.disable())
-
-            .sessionManagement(session ->
-                    session.sessionCreationPolicy(
-                            SessionCreationPolicy.STATELESS
-                    )
-            )
-
-            .authorizeHttpRequests(auth -> auth
-
-                    .requestMatchers(
-                            "/auth/**"
-                    ).permitAll()
-
-                    .anyRequest().authenticated()
-            );
-
-        return http.build();
-    }
+	public SecurityFilterChain securityFilterChain(
+	        HttpSecurity http
+	) throws Exception {
+	
+	    http
+	        .cors(cors -> {})
+	        .csrf(csrf -> csrf.disable())
+	
+	        .sessionManagement(session ->
+	                session.sessionCreationPolicy(
+	                        SessionCreationPolicy.STATELESS
+	                )
+	        )
+	
+	        .authorizeHttpRequests(auth -> auth
+	                .requestMatchers("/auth/**").permitAll()
+	                .anyRequest().authenticated()
+	        )
+	
+	        .addFilterBefore(
+	                jwtFilter,
+	                UsernamePasswordAuthenticationFilter.class
+	        );
+	
+	    return http.build();
+	}
 }
