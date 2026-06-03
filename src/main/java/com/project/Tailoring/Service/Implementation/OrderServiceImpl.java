@@ -2,9 +2,13 @@ package com.project.Tailoring.Service.Implementation;
 
 import java.util.List;
 
+import java.util.Date;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.project.Tailoring.DTO.OrderReportDTO;
 import com.project.Tailoring.Entities.Customer;
 import com.project.Tailoring.Entities.Order;
 import com.project.Tailoring.Repository.CustomerRepository;
@@ -36,6 +40,19 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(orders);
     }
 
+    
+    @Override
+    public List<OrderReportDTO> getOrdersBetweenDates(
+            Date startDate,
+            Date endDate
+    ) {
+
+        return orderRepository.findOrdersBetweenDates(
+                startDate,
+                endDate
+        );
+    }
+    
     @Override
     public List<Order> getAllOrders() {
 

@@ -10,6 +10,16 @@ import com.project.Tailoring.Entities.SubOrder;
 import com.project.Tailoring.Service.OrderService;
 import com.project.Tailoring.Service.SubOrderService;
 
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+
+import com.project.Tailoring.DTO.OrderReportDTO;
+
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
@@ -36,6 +46,47 @@ public class OrderController {
     @GetMapping("/{id}")
     public Order getOrderById(@PathVariable Long id) {
         return ordersService.getOrderById(id);
+    }
+    
+    //NEW REPORT API
+    @GetMapping("/report")
+    public ResponseEntity<?> getOrdersBetweenDates(
+
+            @RequestParam String startDate,
+
+            @RequestParam String endDate
+
+    ) throws Exception {
+
+        SimpleDateFormat sdf =
+                new SimpleDateFormat("yyyy-MM-dd");
+
+        Date start =
+                sdf.parse(startDate);
+
+        Date end =
+                sdf.parse(endDate);
+
+        List<OrderReportDTO> orders =
+                ordersService.getOrdersBetweenDates(
+                        start,
+                        end
+                );
+
+        Map<String, Object> response =
+                new HashMap<>();
+
+        response.put(
+                "totalOrders",
+                orders.size()
+        );
+
+        response.put(
+                "orders",
+                orders
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     // SAVE SUBORDER
