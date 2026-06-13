@@ -17,6 +17,7 @@ import jakarta.persistence.*;
         "customerName",
         "customerid",
         "orderprice",
+        "orderStatus",
         "orderdate",
         "subOrders"
 })
@@ -48,6 +49,9 @@ public class Order {
     private Customer customer;
 
     private Double orderprice;
+
+    @Column(name = "orderstatus", nullable = false)
+    private String orderStatus = "PENDING";
 
     private Date orderdate;
 
@@ -113,6 +117,14 @@ public class Order {
 
     public void setOrderdate(Date orderdate) {
         this.orderdate = orderdate;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public List<SubOrder> getSubOrders() {

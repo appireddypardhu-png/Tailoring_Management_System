@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import java.util.Map;
 
 import com.project.Tailoring.DTO.OrderReportDTO;
 
@@ -46,6 +47,19 @@ public class OrderController {
     @GetMapping("/{id}")
     public Order getOrderById(@PathVariable Long id) {
         return ordersService.getOrderById(id);
+    }
+
+    // GET ORDERS BY CUSTOMER ID
+    @GetMapping("/customer/{customerId}")
+    public List<Order> getOrdersByCustomer(@PathVariable Long customerId) {
+        return ordersService.getOrdersByCustomer(customerId);
+    }
+
+    // UPDATE ORDER STATUS
+    @PatchMapping("/{id}/status")
+    public Order updateOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        String status = body.getOrDefault("orderStatus", body.get("status"));
+        return ordersService.updateOrderStatus(id, status);
     }
     
     //NEW REPORT API
@@ -105,5 +119,12 @@ public class OrderController {
     @GetMapping("/suborder/{id}")
     public SubOrder getSubOrderById(@PathVariable Long id) {
         return subOrderService.getSubOrderById(id);
+    }
+
+    // UPDATE SUBORDER STATUS
+    @PatchMapping("/suborder/{id}/status")
+    public SubOrder updateSubOrderStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        String status = body.getOrDefault("status", body.get("subOrderStatus"));
+        return subOrderService.updateSubOrderStatus(id, status);
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.Tailoring.Entities.Member;
 import com.project.Tailoring.Entities.Order;
@@ -28,6 +29,7 @@ public class SubOrderServiceImpl implements SubOrderService {
     private MemberRepository memberRepository;
 
     @Override
+    @Transactional
     public SubOrder saveSubOrder(SubOrder subOrder) {
 
         // SET ORDER
@@ -65,5 +67,14 @@ public class SubOrderServiceImpl implements SubOrderService {
     public SubOrder getSubOrderById(Long id) {
 
         return subOrderRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    @Transactional
+    public SubOrder updateSubOrderStatus(Long subOrderId, String status) {
+        SubOrder so = subOrderRepository.findById(subOrderId)
+                .orElseThrow(() -> new RuntimeException("SubOrder not found"));
+        so.setStatus(status);
+        return subOrderRepository.save(so);
     }
 }

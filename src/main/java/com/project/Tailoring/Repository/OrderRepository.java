@@ -26,4 +26,7 @@ public interface OrderRepository
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate
     );
+
+    // Find all orders for a given customer id
+    List<Order> findByCustomerCustomerid(Long customerid);
 }

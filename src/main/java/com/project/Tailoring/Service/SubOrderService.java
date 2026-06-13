@@ -11,4 +11,6 @@ public interface SubOrderService {
     List<SubOrder> getAllSubOrders();
 
     SubOrder getSubOrderById(Long id);
+
+    SubOrder updateSubOrderStatus(Long subOrderId, String status);
 }

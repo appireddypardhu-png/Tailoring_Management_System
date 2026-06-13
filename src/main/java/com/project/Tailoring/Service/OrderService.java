@@ -14,8 +14,12 @@ public interface OrderService {
 
     Order getOrderById(Long id);
 
+    List<Order> getOrdersByCustomer(Long customerid);
+
     List<OrderReportDTO> getOrdersBetweenDates(
             Date startDate,
             Date endDate
     );
+
+    Order updateOrderStatus(Long orderId, String status);
 }

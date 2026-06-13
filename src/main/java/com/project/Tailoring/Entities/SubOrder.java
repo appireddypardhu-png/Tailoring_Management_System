@@ -38,6 +38,15 @@ public class SubOrder {
 
     private String typeofdress;
 
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity = 1;
+
+    @Column(name = "status", nullable = false)
+    private String status = "NEW";
+
+    @Column(name = "price", nullable = false)
+    private Double price = 0.0;
+
     public SubOrder() {
     }
 
@@ -97,5 +106,29 @@ public class SubOrder {
 
     public void setTypeofdress(String typeofdress) {
         this.typeofdress = typeofdress;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }
