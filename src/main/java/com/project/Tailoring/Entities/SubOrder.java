@@ -26,6 +26,10 @@ public class SubOrder {
     @Transient
     private Long memberid;
 
+    // Used during GET - member name
+    @Transient
+    private String memberName;
+
     @ManyToOne
     @JoinColumn(name = "orderid")
     @JsonIgnore
@@ -82,6 +86,18 @@ public class SubOrder {
 
     public void setMemberid(Long memberid) {
         this.memberid = memberid;
+    }
+
+    public String getMemberName() {
+        if (member != null) {
+            return member.getMname();
+        }
+
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
     }
 
     public Order getOrders() {

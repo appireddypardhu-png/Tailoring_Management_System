@@ -96,7 +96,8 @@ public class OrderServiceImpl implements OrderService {
     
     @Override
     public List<Order> getAllOrders() {
-        return orderRepository.findAllByOrderByOrderdateDesc();
+        // Use fetch-join query to load customers, suborders and members in one go
+        return orderRepository.findAllWithCustomerAndSubOrdersAndMembersOrderByOrderidDesc();
     }
 
     @Override
@@ -107,7 +108,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrdersByCustomer(Long customerid) {
-        return orderRepository.findByCustomerCustomeridOrderByOrderdateDesc(customerid);
+        // Use fetch-join query to load suborders and members as well
+        return orderRepository.findByCustomerIdWithSubOrdersAndMembersOrderByOrderidDesc(customerid);
     }
 
     @Override

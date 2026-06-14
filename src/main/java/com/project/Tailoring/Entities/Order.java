@@ -16,6 +16,7 @@ import jakarta.persistence.*;
 @JsonPropertyOrder({
         "orderid",
         "customerName",
+        "customerPhone",
         "customerid",
         "orderprice",
         "orderStatus",
@@ -43,6 +44,10 @@ public class Order {
     // Used during GET
     @Transient
     private String customerName;
+
+    // Used during GET - customer's phone
+    @Transient
+    private String customerPhone;
 
     @ManyToOne
     @JoinColumn(name = "customerid")
@@ -96,6 +101,18 @@ public class Order {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public String getCustomerPhone() {
+        if (customer != null) {
+            return customer.getCphone();
+        }
+
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
     }
 
     public Customer getCustomer() {

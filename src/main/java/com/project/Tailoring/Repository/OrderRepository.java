@@ -21,7 +21,7 @@ public interface OrderRepository
         FROM Order o
         JOIN o.customer c
         WHERE o.orderdate BETWEEN :startDate AND :endDate
-        ORDER BY o.orderdate DESC
+        ORDER BY o.orderid DESC
     """)
     List<OrderReportDTO> findOrdersBetweenDates(
             @Param("startDate") Date startDate,
@@ -29,8 +29,14 @@ public interface OrderRepository
     );
 
     // Find all orders for a given customer id
-    List<Order> findByCustomerCustomeridOrderByOrderdateDesc(Long customerid);
+    List<Order> findByCustomerCustomeridOrderByOrderidDesc(Long customerid);
 
-    // Find all orders ordered by date desc
-    List<Order> findAllByOrderByOrderdateDesc();
+    // Find all orders ordered by id desc
+    List<Order> findAllByOrderByOrderidDesc();
+
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.subOrders so LEFT JOIN FETCH so.member m LEFT JOIN FETCH o.customer c ORDER BY o.orderid DESC")
+    List<Order> findAllWithCustomerAndSubOrdersAndMembersOrderByOrderidDesc();
+
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.subOrders so LEFT JOIN FETCH so.member m LEFT JOIN FETCH o.customer c WHERE c.customerid = :customerid ORDER BY o.orderid DESC")
+    List<Order> findByCustomerIdWithSubOrdersAndMembersOrderByOrderidDesc(@Param("customerid") Long customerid);
 }
