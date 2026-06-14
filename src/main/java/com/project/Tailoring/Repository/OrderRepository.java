@@ -21,6 +21,7 @@ public interface OrderRepository
         FROM Order o
         JOIN o.customer c
         WHERE o.orderdate BETWEEN :startDate AND :endDate
+        ORDER BY o.orderdate DESC
     """)
     List<OrderReportDTO> findOrdersBetweenDates(
             @Param("startDate") Date startDate,
@@ -28,5 +29,8 @@ public interface OrderRepository
     );
 
     // Find all orders for a given customer id
-    List<Order> findByCustomerCustomerid(Long customerid);
+    List<Order> findByCustomerCustomeridOrderByOrderdateDesc(Long customerid);
+
+    // Find all orders ordered by date desc
+    List<Order> findAllByOrderByOrderdateDesc();
 }

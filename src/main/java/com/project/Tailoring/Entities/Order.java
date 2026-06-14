@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.*;
 
@@ -53,6 +54,8 @@ public class Order {
     @Column(name = "orderstatus", nullable = false)
     private String orderStatus = "PENDING";
 
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date orderdate;
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)

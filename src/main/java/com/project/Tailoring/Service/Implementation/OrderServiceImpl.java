@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.Tailoring.DTO.OrderReportDTO;
+import com.project.Tailoring.Entities.SubOrder;
 import com.project.Tailoring.Entities.Customer;
 import com.project.Tailoring.Entities.Member;
 import com.project.Tailoring.Entities.Order;
@@ -95,8 +96,7 @@ public class OrderServiceImpl implements OrderService {
     
     @Override
     public List<Order> getAllOrders() {
-
-        return orderRepository.findAll();
+        return orderRepository.findAllByOrderByOrderdateDesc();
     }
 
     @Override
@@ -107,14 +107,26 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getOrdersByCustomer(Long customerid) {
-        return orderRepository.findByCustomerCustomerid(customerid);
+        return orderRepository.findByCustomerCustomeridOrderByOrderdateDesc(customerid);
     }
 
     @Override
+    @Transactional
     public Order updateOrderStatus(Long orderId, String status) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+
         order.setOrderStatus(status);
+
+        // If the order is being marked completed, also mark all its suborders completed
+        if (status != null && status.equalsIgnoreCase("completed")) {
+            if (order.getSubOrders() != null) {
+                for (SubOrder so : order.getSubOrders()) {
+                    so.setStatus(status);
+                }
+            }
+        }
+
         return orderRepository.save(order);
     }
 }
