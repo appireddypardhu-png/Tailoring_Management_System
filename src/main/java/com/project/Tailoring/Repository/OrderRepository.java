@@ -13,17 +13,8 @@ import com.project.Tailoring.Entities.Order;
 public interface OrderRepository
         extends JpaRepository<Order, Long> {
 
-    @Query("""
-        SELECT new com.project.Tailoring.DTO.OrderReportDTO(
-            o.orderid,
-            c.cname
-        )
-        FROM Order o
-        JOIN o.customer c
-        WHERE o.orderdate BETWEEN :startDate AND :endDate
-        ORDER BY o.orderid DESC
-    """)
-    List<OrderReportDTO> findOrdersBetweenDates(
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.subOrders so LEFT JOIN FETCH so.member m LEFT JOIN FETCH o.customer c WHERE o.orderdate BETWEEN :startDate AND :endDate ORDER BY o.orderid DESC")
+    List<Order> findOrdersBetweenDates(
             @Param("startDate") Date startDate,
             @Param("endDate") Date endDate
     );

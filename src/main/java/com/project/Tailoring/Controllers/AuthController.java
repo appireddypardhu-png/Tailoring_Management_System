@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.project.Tailoring.DTO.AuthRequest;
+import com.project.Tailoring.DTO.RefreshTokenResponse;
 import com.project.Tailoring.Entities.AppUser;
 import com.project.Tailoring.Repository.AppUserRepository;
 import com.project.Tailoring.Security.JwtUtil;
@@ -62,5 +63,48 @@ public class AuthController {
         }
 
         return "Invalid Username or Password";
+    }
+
+    /**
+     * Refresh token endpoint - requires valid JWT token
+     * Extracts token from Authorization header and returns a new token with extended expiry
+     */
+    @PostMapping("/refresh-token")
+    public RefreshTokenResponse refreshToken(
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        try {
+            // Extract token from Authorization header (format: "Bearer <token>")
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return new RefreshTokenResponse(
+                        null,
+                        "Invalid Authorization header format. Expected: Bearer <token>"
+                );
+            }
+
+            String token = authHeader.substring(7);
+
+            // Validate the token
+            if (!jwtUtil.validateToken(token)) {
+                return new RefreshTokenResponse(
+                        null,
+                        "Token is invalid or expired"
+                );
+            }
+
+            // Generate new token
+            String newToken = jwtUtil.refreshToken(token);
+
+            return new RefreshTokenResponse(
+                    newToken,
+                    "Token refreshed successfully"
+            );
+
+        } catch (Exception e) {
+            return new RefreshTokenResponse(
+                    null,
+                    "Error refreshing token: " + e.getMessage()
+            );
+        }
     }
 }

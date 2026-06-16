@@ -15,11 +15,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.springframework.http.ResponseEntity;
 import java.util.Map;
-
-import com.project.Tailoring.DTO.OrderReportDTO;
 
 @RestController
 @RequestMapping("/orders")
@@ -41,6 +41,72 @@ public class OrderController {
     @GetMapping
     public List<Order> getAllOrders() {
         return ordersService.getAllOrders();
+    }
+
+    // GET ORDERS FOR A YEAR
+    @GetMapping("/year/{year}")
+    public ResponseEntity<?> getOrdersByYear(@PathVariable int year) throws Exception {
+        Calendar startCal = new GregorianCalendar();
+        startCal.clear();
+        startCal.set(Calendar.YEAR, year);
+        startCal.set(Calendar.MONTH, Calendar.JANUARY);
+        startCal.set(Calendar.DAY_OF_MONTH, 1);
+
+        Calendar endCal = new GregorianCalendar();
+        endCal.clear();
+        endCal.set(Calendar.YEAR, year);
+        endCal.set(Calendar.MONTH, Calendar.DECEMBER);
+        endCal.set(Calendar.DAY_OF_MONTH, 31);
+        endCal.set(Calendar.HOUR_OF_DAY, 23);
+        endCal.set(Calendar.MINUTE, 59);
+        endCal.set(Calendar.SECOND, 59);
+        endCal.set(Calendar.MILLISECOND, 999);
+
+        Date start = startCal.getTime();
+        Date end = endCal.getTime();
+
+        List<Order> orders = ordersService.getOrdersBetweenDates(start, end);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalOrders", orders.size());
+        response.put("orders", orders);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // GET ORDERS FOR A GIVEN MONTH IN A YEAR (month: 1-12)
+    @GetMapping("/year/{year}/month/{month}")
+    public ResponseEntity<?> getOrdersByMonthOfYear(@PathVariable int year, @PathVariable int month) throws Exception {
+        if (month < 1 || month > 12) {
+            return ResponseEntity.badRequest().body(Map.of("error", "month must be between 1 and 12"));
+        }
+
+        Calendar startCal = new GregorianCalendar();
+        startCal.clear();
+        startCal.set(Calendar.YEAR, year);
+        startCal.set(Calendar.MONTH, month - 1);
+        startCal.set(Calendar.DAY_OF_MONTH, 1);
+
+        Calendar endCal = new GregorianCalendar();
+        endCal.clear();
+        endCal.set(Calendar.YEAR, year);
+        endCal.set(Calendar.MONTH, month - 1);
+        endCal.set(Calendar.DAY_OF_MONTH, endCal.getActualMaximum(Calendar.DAY_OF_MONTH));
+        endCal.set(Calendar.HOUR_OF_DAY, 23);
+        endCal.set(Calendar.MINUTE, 59);
+        endCal.set(Calendar.SECOND, 59);
+        endCal.set(Calendar.MILLISECOND, 999);
+
+        Date start = startCal.getTime();
+        Date end = endCal.getTime();
+
+        List<Order> orders = ordersService.getOrdersBetweenDates(start, end);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("totalOrders", orders.size());
+        response.put("orders", orders);
+
+        return ResponseEntity.ok(response);
     }
 
     // GET ORDER BY ID
@@ -81,7 +147,7 @@ public class OrderController {
         Date end =
                 sdf.parse(endDate);
 
-        List<OrderReportDTO> orders =
+        List<Order> orders =
                 ordersService.getOrdersBetweenDates(
                         start,
                         end

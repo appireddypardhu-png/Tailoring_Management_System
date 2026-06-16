@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.security.Key;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -22,11 +24,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private static final String SECRET =
-            "mysecretkeymysecretkeymysecretkey12345";
+    private static final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
 
-    private final Key key =
-            Keys.hmacShaKeyFor(SECRET.getBytes());
+    private static final String SECRET = "mysecretkeymysecretkeymysecretkey12345";
+
+    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
     @Override
     protected void doFilterInternal(
@@ -35,29 +37,25 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String authHeader =
-                request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization");
 
-        if(authHeader != null &&
-                authHeader.startsWith("Bearer ")) {
+        logger.debug("Incoming request {} {}", request.getMethod(), request.getRequestURI());
+        logger.debug("Authorization header present: {}", authHeader != null);
 
-            String token =
-                    authHeader.substring(7);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+            String token = authHeader.substring(7);
 
             try {
-
                 Claims claims = Jwts.parserBuilder()
-
                         .setSigningKey(key)
-
                         .build()
-
                         .parseClaimsJws(token)
-
                         .getBody();
 
-                String username =
-                        claims.getSubject();
+                String username = claims.getSubject();
+
+                logger.debug("JWT parsed successfully, subject={}", username);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
@@ -66,21 +64,20 @@ public class JwtFilter extends OncePerRequestFilter {
                                 Collections.emptyList()
                         );
 
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
-                );
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
+                logger.debug("SecurityContext authentication set for user={}", username);
+
+            } catch (Exception e) {
+                // Log full exception at debug for diagnostics and clear context to avoid partial auth
+                logger.warn("JWT parsing/validation failed: {}", e.getMessage());
+                logger.debug("JWT exception", e);
+                SecurityContextHolder.clearContext();
             }
-            catch(Exception e) {
-
-                System.out.println("JWT ERROR: "
-                        + e.getMessage());
-            }
+        } else {
+            logger.debug("No Bearer token found in Authorization header");
         }
 
         filterChain.doFilter(request, response);

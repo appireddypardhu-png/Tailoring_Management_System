@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.project.Tailoring.DTO.OrderReportDTO;
 import com.project.Tailoring.Entities.SubOrder;
 import com.project.Tailoring.Entities.Customer;
 import com.project.Tailoring.Entities.Member;
@@ -83,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
 
     
     @Override
-    public List<OrderReportDTO> getOrdersBetweenDates(
+    public List<Order> getOrdersBetweenDates(
             Date startDate,
             Date endDate
     ) {
@@ -97,7 +96,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<Order> getAllOrders() {
         // Use fetch-join query to load customers, suborders and members in one go
-        return orderRepository.findAllWithCustomerAndSubOrdersAndMembersOrderByOrderidDesc();
+        List<Order> orders = orderRepository.findAllWithCustomerAndSubOrdersAndMembersOrderByOrderidDesc();
+
+        // Return at most 20 latest records
+        if (orders == null) return List.of();
+        return orders.size() > 20 ? orders.subList(0, 20) : orders;
     }
 
     @Override

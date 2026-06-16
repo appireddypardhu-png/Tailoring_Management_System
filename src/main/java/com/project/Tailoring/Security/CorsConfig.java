@@ -9,10 +9,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import org.springframework.web.filter.CorsFilter;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class CorsConfig {
 
     @Bean
+    @org.springframework.context.annotation.Lazy
     public CorsFilter corsFilter() {
 
         CorsConfiguration config =

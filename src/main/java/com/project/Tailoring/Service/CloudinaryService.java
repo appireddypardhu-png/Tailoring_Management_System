@@ -2,6 +2,7 @@ package com.project.Tailoring.Service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class CloudinaryService {
 
     @Autowired
-    private Cloudinary cloudinary;
+    private ObjectProvider<Cloudinary> cloudinaryProvider;
 
     /**
      * Get the URL for a specific image
@@ -23,6 +24,10 @@ public class CloudinaryService {
      * @return The URL of the image
      */
     public String getImageUrl(String publicId) {
+        Cloudinary cloudinary = cloudinaryProvider.getIfAvailable();
+        if (cloudinary == null) {
+            throw new IllegalStateException("Cloudinary client not available");
+        }
         return cloudinary.url()
             .secure(true)
             .generate(publicId);
@@ -39,6 +44,11 @@ public class CloudinaryService {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Map<String, List<Map<String, String>>> listFoldersWithImages(String folderName) throws Exception {
         Map<String, List<Map<String, String>>> folders = new HashMap<>();
+
+        Cloudinary cloudinary = cloudinaryProvider.getIfAvailable();
+        if (cloudinary == null) {
+            throw new IllegalStateException("Cloudinary client not available");
+        }
 
         Map apiResult = cloudinary.api().resourcesByAssetFolder(folderName, ObjectUtils.asMap(
             "max_results", 500
