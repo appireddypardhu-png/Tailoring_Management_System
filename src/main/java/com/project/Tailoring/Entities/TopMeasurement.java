@@ -23,7 +23,6 @@ public class TopMeasurement {
     private Double waist;
     private Double shoulder;
     private Double sleeveLength;
-    private Double topLength;
     private Double armhole;
     private Double blouseLength;
     private Double dressLength;
@@ -75,13 +74,7 @@ public class TopMeasurement {
         this.sleeveLength = sleeveLength;
     }
 
-    public Double getTopLength() {
-        return topLength;
-    }
-
-    public void setTopLength(Double topLength) {
-        this.topLength = topLength;
-    }
+    // topLength removed
 
     public Double getArmhole() {
         return armhole;
