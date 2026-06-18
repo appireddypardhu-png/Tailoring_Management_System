@@ -112,13 +112,16 @@ public class MemberServiceImpl implements MemberService {
                  
                  if (existingTop != null && incomingTop.getTopid() == null) {
                      // Update existing measurement's fields (incoming measurement has no id)
-                     existingTop.setBust(incomingTop.getBust());
-                     existingTop.setWaist(incomingTop.getWaist());
-                     existingTop.setShoulder(incomingTop.getShoulder());
-                     existingTop.setSleeveLength(incomingTop.getSleeveLength());
-                     existingTop.setTopLength(incomingTop.getTopLength());
-                     existingTop.setNeckSize(incomingTop.getNeckSize());
-                     existingTop.setArmhole(incomingTop.getArmhole());
+                      existingTop.setBust(incomingTop.getBust());
+                      existingTop.setWaist(incomingTop.getWaist());
+                      existingTop.setShoulder(incomingTop.getShoulder());
+                      existingTop.setSleeveLength(incomingTop.getSleeveLength());
+                      // topLength and neckSize were removed; map to new fields
+                      existingTop.setArmhole(incomingTop.getArmhole());
+                      existingTop.setBlouseLength(incomingTop.getBlouseLength());
+                      existingTop.setDressLength(incomingTop.getDressLength());
+                      existingTop.setSleeveRound(incomingTop.getSleeveRound());
+                      existingTop.setDressHip(incomingTop.getDressHip());
                      TopMeasurement savedTop = topMeasurementRepository.save(existingTop);
                      existingMember.setTopMeasurement(savedTop);
                  } else {
@@ -134,12 +137,12 @@ public class MemberServiceImpl implements MemberService {
                  
                  if (existingBottom != null && incomingBottom.getBottomid() == null) {
                      // Update existing measurement's fields (incoming measurement has no id)
-                     existingBottom.setWaist(incomingBottom.getWaist());
-                     existingBottom.setHip(incomingBottom.getHip());
-                     existingBottom.setThigh(incomingBottom.getThigh());
-                     existingBottom.setKneeSize(incomingBottom.getKneeSize());
-                     existingBottom.setAnkleSize(incomingBottom.getAnkleSize());
-                     existingBottom.setBottomLength(incomingBottom.getBottomLength());
+                      existingBottom.setWaist(incomingBottom.getWaist());
+                      existingBottom.setHip(incomingBottom.getHip());
+                      // removed thigh, kneeSize, ankleSize, bottomLength -> map to new fields
+                      existingBottom.setPantLength(incomingBottom.getPantLength());
+                      existingBottom.setMori(incomingBottom.getMori());
+                      existingBottom.setThighRound(incomingBottom.getThighRound());
                      BottomMeasurement savedBottom = bottomMeasurementRepository.save(existingBottom);
                      existingMember.setBottomMeasurement(savedBottom);
                  } else {
