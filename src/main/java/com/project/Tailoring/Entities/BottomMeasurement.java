@@ -26,17 +26,14 @@ public class BottomMeasurement {
     @Column(name = "hip")
     private Double hip;
 
-    @Column(name = "thigh")
-    private Double thigh;
+    @Column(name = "pant_length")
+    private Double pantLength;
 
-    @Column(name = "knee_size")
-    private Double kneeSize;
+    @Column(name = "mori")
+    private Double mori;
 
-    @Column(name = "ankle_size")
-    private Double ankleSize;
-
-    @Column(name = "bottom_length")
-    private Double bottomLength;
+    @Column(name = "thigh_round")
+    private Double thighRound;
 
     @OneToOne
     @JoinColumn(name = "mid")
@@ -70,36 +67,28 @@ public class BottomMeasurement {
         this.hip = hip;
     }
 
-    public Double getThigh() {
-        return thigh;
+    public Double getPantLength() {
+        return pantLength;
     }
 
-    public void setThigh(Double thigh) {
-        this.thigh = thigh;
+    public void setPantLength(Double pantLength) {
+        this.pantLength = pantLength;
     }
 
-    public Double getKneeSize() {
-        return kneeSize;
+    public Double getMori() {
+        return mori;
     }
 
-    public void setKneeSize(Double kneeSize) {
-        this.kneeSize = kneeSize;
+    public void setMori(Double mori) {
+        this.mori = mori;
     }
 
-    public Double getAnkleSize() {
-        return ankleSize;
+    public Double getThighRound() {
+        return thighRound;
     }
 
-    public void setAnkleSize(Double ankleSize) {
-        this.ankleSize = ankleSize;
-    }
-
-    public Double getBottomLength() {
-        return bottomLength;
-    }
-
-    public void setBottomLength(Double bottomLength) {
-        this.bottomLength = bottomLength;
+    public void setThighRound(Double thighRound) {
+        this.thighRound = thighRound;
     }
 
     public Member getMember() {

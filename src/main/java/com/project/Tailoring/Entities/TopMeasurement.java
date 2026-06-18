@@ -24,8 +24,11 @@ public class TopMeasurement {
     private Double shoulder;
     private Double sleeveLength;
     private Double topLength;
-    private Double neckSize;
     private Double armhole;
+    private Double blouseLength;
+    private Double dressLength;
+    private Double sleeveRound;
+    private Double dressHip;
 
     @OneToOne
     @JoinColumn(name = "mid")
@@ -80,20 +83,44 @@ public class TopMeasurement {
         this.topLength = topLength;
     }
 
-    public Double getNeckSize() {
-        return neckSize;
-    }
-
-    public void setNeckSize(Double neckSize) {
-        this.neckSize = neckSize;
-    }
-
     public Double getArmhole() {
         return armhole;
     }
 
     public void setArmhole(Double armhole) {
         this.armhole = armhole;
+    }
+
+    public Double getBlouseLength() {
+        return blouseLength;
+    }
+
+    public void setBlouseLength(Double blouseLength) {
+        this.blouseLength = blouseLength;
+    }
+
+    public Double getDressLength() {
+        return dressLength;
+    }
+
+    public void setDressLength(Double dressLength) {
+        this.dressLength = dressLength;
+    }
+
+    public Double getSleeveRound() {
+        return sleeveRound;
+    }
+
+    public void setSleeveRound(Double sleeveRound) {
+        this.sleeveRound = sleeveRound;
+    }
+
+    public Double getDressHip() {
+        return dressHip;
+    }
+
+    public void setDressHip(Double dressHip) {
+        this.dressHip = dressHip;
     }
 
     public Member getMember() {
